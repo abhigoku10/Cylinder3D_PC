@@ -127,7 +127,7 @@ def build_valtest(dataset_config,
 
     test_dataset_loader = torch.utils.data.DataLoader(dataset=test_dataset,
                                                        batch_size=test_dataloader_config["batch_size"],
-                                                       collate_fn=collate_fn_BEV,
+                                                       collate_fn=collate_fn_BEV_test,
                                                        shuffle=test_dataloader_config["shuffle"],
                                                        num_workers=test_dataloader_config["num_workers"])
     val_dataset_loader = torch.utils.data.DataLoader(dataset=val_dataset,
