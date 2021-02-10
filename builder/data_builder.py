@@ -81,7 +81,7 @@ def build_valtest(dataset_config,
 
     
 
-    # label_mapping = dataset_config["label_mapping"]
+    label_mapping = dataset_config["label_mapping"]
 
     SemKITTI = get_pc_model_class(dataset_config['pc_dataset_type'])
 
