@@ -53,9 +53,9 @@ class SemKITTI_sk(data.Dataset):
         self.im_idx = []
         for i_folder in split:
             self.im_idx += absoluteFilePaths('/'.join([data_path, str(i_folder).zfill(2), 'velodyne']))
-            print('*'*60)
-            print("The im_idx in pc_dataset.py :{}".format(self.im_idx))
-            print('*'*60)
+#             print('*'*60)
+#             print("The im_idx in pc_dataset.py :{}".format(self.im_idx))
+#             print('*'*60)
 
     def __len__(self):
         'Denotes the total number of samples'
@@ -63,9 +63,9 @@ class SemKITTI_sk(data.Dataset):
 
     def __getitem__(self, index):
         raw_data = np.fromfile(self.im_idx[index], dtype=np.float32).reshape((-1, 4))
-        print('*'*60)
-        print("The index in pc_dataset.py :{}".format(index))
-        print('*'*60)
+#         print('*'*60)
+#         print("The index in pc_dataset.py :{}".format(index))
+#         print('*'*60)
         if self.imageset == 'test':
             annotated_data = np.expand_dims(np.zeros_like(raw_data[:, 0], dtype=int), axis=1)
         else:
