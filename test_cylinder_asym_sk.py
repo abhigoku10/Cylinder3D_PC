@@ -139,8 +139,9 @@ def main(args):
     print("Processing the Testing pipeline")
     print("The length of the test dataset is {}".format(len(test_dataset_loader)))
     print('#'*80)
+    print(test_dataset_loader)
     with torch.no_grad():
-        for i_iter_val, (_,_, test_grid,_, test_pt_fea,test_index) in enumerate(test_dataset_loader):
+        for i_iter_val, (_,_,test_grid,_,test_pt_fea,test_index) in enumerate(test_dataset_loader):
 
             test_pt_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in
                                             test_pt_fea]
