@@ -42,7 +42,7 @@ dataset_params:
 ## Data_loader options
 train_data_loader:
   ##data_path: "/data/dataset/semantic_kitti/data_semkitti/dataset/sequences/"
-  data_path: "/content/drive/MyDrive/PointCloudData/semantic_kitti_sample/sequences" 
+  data_path: "/content/drive/MyDrive/PointCloudData/semantic_kitti_sample/sequences/" 
   imageset: "train"
   return_ref: True
   batch_size: 2
@@ -60,7 +60,7 @@ val_data_loader:
  
 test_data_loader:
   #data_path: "/data/dataset/semantic_kitti/data_semkitti/dataset/sequences/"
-  data_path: "/content/drive/MyDrive/PointCloudData/semantic_kitti_sample/sequences"
+  data_path: "/content/drive/MyDrive/PointCloudData/semantic_kitti_sample/sequences/"
   imageset: "test"
   return_ref: True
   batch_size: 1
