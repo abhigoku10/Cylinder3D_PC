@@ -80,7 +80,7 @@ def main(args):
 
     ##validation set resulsts 
     pbar = tqdm(total=len(val_dataset_loader))
-    print("THe length of the dataset : {} ".format(len(val_dataset_loader))
+    print("THe length of the dataset : {} ".format(len(val_dataset_loader)))
     my_model.eval()
     hist_list = []
     time_list = []
