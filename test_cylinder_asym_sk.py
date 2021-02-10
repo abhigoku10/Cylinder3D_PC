@@ -142,11 +142,12 @@ def main(args):
     print(test_dataset_loader)
     with torch.no_grad():
         for i_iter_val, (_,test_grid,_,test_pt_fea,test_index) in enumerate(test_dataset_loader):
-            print(" THe enumuerated values test_grid:{} test_pt_feat:{} test_index:{}".format(test_grid,test_pt_fea,test_index))
+#             print(" THe enumuerated values test_grid:{} test_pt_feat:{} test_index:{}".format(test_grid,test_pt_fea,test_index))
 
             test_pt_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in
                                             test_pt_fea]
             test_grid_ten = [torch.from_numpy(i).to(pytorch_device) for i in test_grid]
+         
             predict_labels = my_model(test_pt_fea_ten, test_grid_ten)
 
             predict_labels = torch.argmax(predict_labels, dim=1)
