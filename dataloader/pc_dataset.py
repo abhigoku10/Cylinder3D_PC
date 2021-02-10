@@ -74,11 +74,11 @@ class SemKITTI_sk(data.Dataset):
             annotated_data = annotated_data & 0xFFFF  # delete high 16 digits binary
             annotated_data = np.vectorize(self.learning_map.__getitem__)(annotated_data)
 
-        data_tuple = (raw_data[:, :3], annotated_data.astype(np.uint8),self.im_idx[index])
+        data_tuple = (raw_data[:, :3], annotated_data.astype(np.uint8))
         if self.return_ref:
 #             print("Entered SemKITTI_sk -> self.return_ref ->index:{}".format(index))
             data_tuple += (raw_data[:, 3],)
-        return data_tuple
+        return data_tuple,self.im_idx[index]
 
 
 @register_dataset
