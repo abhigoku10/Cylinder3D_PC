@@ -87,7 +87,7 @@ def main(args):
     with torch.no_grad():
         for i_iter_val, (_, val_vox_label, val_grid, val_pt_labs, val_pt_fea) in enumerate(
                             val_dataset_loader):
-            
+            print("The processingframe is : {}".format(i_iter_val))
             ##check if this is required 
             val_vox_label = SemKITTI2train(val_vox_label)
             val_pt_labs = SemKITTI2train(val_pt_labs)
