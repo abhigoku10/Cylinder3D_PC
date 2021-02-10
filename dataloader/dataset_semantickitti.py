@@ -190,7 +190,7 @@ class cylinder_dataset(data.Dataset):
 
     def __getitem__(self, index):
         'Generates one sample of data'
-        data = self.point_cloud_dataset[index]
+        data,fname = self.point_cloud_dataset[index]
         if len(data) == 2:
             xyz, labels = data
         elif len(data) == 3:
@@ -271,7 +271,7 @@ class cylinder_dataset(data.Dataset):
 
         if self.return_test:
 #             print(" the cycinder_dataset-> self.return_test in set and the index values is :{}".format(index))
-            data_tuple += (grid_ind, labels, return_fea, index)
+            data_tuple += (grid_ind, labels, return_fea, index,fname)
         else:
             data_tuple += (grid_ind, labels, return_fea)
         return data_tuple
@@ -411,4 +411,5 @@ def collate_fn_BEV_test(data):
     point_label = [d[3] for d in data]
     xyz = [d[4] for d in data]
     index = [d[5] for d in data]
-    return torch.from_numpy(data2stack), torch.from_numpy(label2stack), grid_ind_stack, point_label, xyz, index
+    f_name = [d[6] for d in data]
+    return torch.from_numpy(data2stack), torch.from_numpy(label2stack), grid_ind_stack, point_label, xyz, index,f_name
