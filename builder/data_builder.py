@@ -3,7 +3,7 @@
 # @file: data_builder.py 
 
 import torch
-from dataloader.dataset_semantickitti import get_model_class, collate_fn_BEV
+from dataloader.dataset_semantickitti import get_model_class, collate_fn_BEV,collate_fn_BEV_test
 from dataloader.pc_dataset import get_pc_model_class
 
 
