@@ -161,7 +161,7 @@ def main(args):
 #                 _,dir2 = save_dir.split('/sequences/',1)
 #                 new_save_dir = output_path + '/sequences/' +dir2.replace('velodyne','predictions')[:-3]+'label'
  
-                new_save_dir = output_path + '/sequences/' 
+                new_save_dir = output_path + 'sequences/' 
                 if not os.path.exists(os.path.dirname(new_save_dir)):
                     try:
                         os.makedirs(os.path.dirname(new_save_dir))
