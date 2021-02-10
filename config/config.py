@@ -54,7 +54,6 @@ val_data_loader = Map(
     }
 )
 
-####This is similar to val_data_loader
 test_data_loader = Map(
     {
         "data_path": Str(),
@@ -65,6 +64,7 @@ test_data_loader = Map(
         "num_workers": Int(),
     }
 )
+
 train_params = Map(
     {
         "model_load_path": Str(),
@@ -75,7 +75,7 @@ train_params = Map(
         "learning_rate": Float()
      }
 )
-####This is similar to train_params
+
 test_params = Map(
     {
         "model_load_path": Str(), 
@@ -91,7 +91,9 @@ schema_v4 = Map(
         "dataset_params": dataset_params,
         "train_data_loader": train_data_loader,
         "val_data_loader": val_data_loader,
+        "test_data_loader": test_data_loader,
         "train_params": train_params,
+        "test_params": test_params,
     }
 )
 
