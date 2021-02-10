@@ -78,7 +78,11 @@ def build_valtest(dataset_config,
     val_imageset = val_dataloader_config["imageset"]
     test_ref = test_dataloader_config["return_ref"]
     val_ref = val_dataloader_config["return_ref"]
-
+    print('* ',*80)
+    print(test_imageset)
+    print(test_imageset)
+    print('* ',*80)
+          
     
 
     label_mapping = dataset_config["label_mapping"]
