@@ -130,7 +130,7 @@ def main(args):
 
 
 #####Testing inference 
-pbar = tqdm(total=len(test_dataset_loader))
+pbar = tqdm(total=len(val_dataset_loader))
    
 with torch.no_grad():
     for i_iter_val, (_,_, test_grid,_, test_pt_fea,test_index) in enumerate(
