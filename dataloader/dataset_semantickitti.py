@@ -154,6 +154,7 @@ class cylinder_dataset(data.Dataset):
         self.scale_aug = scale_aug
         self.ignore_label = ignore_label
         self.return_test = return_test
+        print(" the cycinder_dataset-> self.return_test in init is set to :{}".format(self.return_test))
         self.fixed_volume_space = fixed_volume_space
         self.max_volume_space = max_volume_space
         self.min_volume_space = min_volume_space
@@ -269,6 +270,7 @@ class cylinder_dataset(data.Dataset):
             return_fea = np.concatenate((return_xyz, sig[..., np.newaxis]), axis=1)
 
         if self.return_test:
+            print(" the cycinder_dataset-> self.return_test in set and the index values is :{}".format(index))
             data_tuple += (grid_ind, labels, return_fea, index)
         else:
             data_tuple += (grid_ind, labels, return_fea)
