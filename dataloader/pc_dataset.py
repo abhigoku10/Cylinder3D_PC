@@ -39,6 +39,9 @@ class SemKITTI_sk(data.Dataset):
             split = semkittiyaml['split']['train']
         elif imageset == 'val':
             split = semkittiyaml['split']['valid']
+            print('*'*60)
+            print("The valid splits are :{}".format(split))
+            print('*'*60)
         elif imageset == 'test':
             split = semkittiyaml['split']['test']
             print('*'*60)
