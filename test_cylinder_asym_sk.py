@@ -80,7 +80,7 @@ def main(args):
 
     ##validation set resulsts 
     print('#'*80)
-    print("Processing the inference pipeline")
+    print("Processing the validation section")
     print('#'*80)
     pbar = tqdm(total=len(val_dataset_loader))
     print("THe length of the validation dataset : {} ".format(len(val_dataset_loader)))
@@ -136,11 +136,11 @@ def main(args):
     #####Testing inference 
     pbar = tqdm(total=len(test_dataset_loader))
     print('#'*80)
-    print("Processing the inference pipeline")
+    print("Processing the Testing pipeline")
+    print("The length of the test dataset is {}".format(len(test_dataset_loader)))
     print('#'*80)
     with torch.no_grad():
-        for i_iter_val, (_,_, test_grid,_, test_pt_fea,test_index) in enumerate(
-                            test_dataset_loader):
+        for i_iter_val, (_,_, test_grid,_, test_pt_fea,test_index) in enumerate(test_dataset_loader):
 
             test_pt_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in
                                             test_pt_fea]
