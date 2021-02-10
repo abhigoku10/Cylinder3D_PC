@@ -80,7 +80,8 @@ def build_valtest(dataset_config,
     val_ref = val_dataloader_config["return_ref"]
     print('* '*80)
     print(test_imageset)
-    print(test_imageset)
+    print('* '*80)
+    print(val_imageset)
     print('* '*80)
           
     
