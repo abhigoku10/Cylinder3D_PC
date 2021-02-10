@@ -159,9 +159,9 @@ def main(args):
                 test_pred_label = predict_labels[count,test_grid[count][:,0],test_grid[count][:,1],test_grid[count][:,2]]
                 test_pred_label = train2SemKITTI(test_pred_label)
                 test_pred_label = np.expand_dims(test_pred_label,axis=1)
-#                 save_dir = test_pt_dataset.im_idx[test_index[count]]
-#                 _,dir2 = save_dir.split('/sequences/',1)
-#                 new_save_dir = output_path + '/sequences/' +dir2.replace('velodyne','predictions')[:-3]+'label'
+                save_dir = test_dataset_loader.im_idx[test_index[count]]
+                _,dir2 = save_dir.split('/sequences/',1)
+                new_save_dir = output_path + '/sequences/' +dir2.replace('velodyne','predictions')[:-3]+'label'
  
                 
 #                 if not os.path.exists(os.path.dirname(new_save_dir)):
