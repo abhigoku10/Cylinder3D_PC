@@ -112,6 +112,7 @@ def build_valtest(dataset_config,
         ignore_label=dataset_config["ignore_label"],
         rotate_aug=False,
         scale_aug=False,
+        return_test= True,
         transform_aug=False
     )
 
