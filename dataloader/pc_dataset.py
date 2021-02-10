@@ -42,7 +42,7 @@ class SemKITTI_sk(data.Dataset):
         elif imageset == 'test':
             split = semkittiyaml['split']['test']
             print('*'*60)
-            print(split)
+            print("The test splits are :{}".format(split))
             print('*'*60)
         else:
             raise Exception('Split must be train/val/test')
@@ -51,7 +51,7 @@ class SemKITTI_sk(data.Dataset):
         for i_folder in split:
             self.im_idx += absoluteFilePaths('/'.join([data_path, str(i_folder).zfill(2), 'velodyne']))
             print('*'*60)
-            print("The im_idx in pc_dataset.py :{}".foramt(self.im_idx))
+            print("The im_idx in pc_dataset.py :{}".format(self.im_idx))
             print('*'*60)
 
     def __len__(self):
@@ -61,7 +61,7 @@ class SemKITTI_sk(data.Dataset):
     def __getitem__(self, index):
         raw_data = np.fromfile(self.im_idx[index], dtype=np.float32).reshape((-1, 4))
         print('*'*60)
-        print("The index in pc_dataset.py :{}".foramt(index))
+        print("The index in pc_dataset.py :{}".format(index))
         print('*'*60)
         if self.imageset == 'test':
             annotated_data = np.expand_dims(np.zeros_like(raw_data[:, 0], dtype=int), axis=1)
