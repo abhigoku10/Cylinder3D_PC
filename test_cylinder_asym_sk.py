@@ -139,7 +139,7 @@ def main(args):
     print("Processing the Testing pipeline")
     print("The length of the test dataset is {}".format(len(test_dataset_loader)))
     print('#'*80)
-    print(test_dataset_loader)
+    print(len(test_dataset_loader))
     with torch.no_grad():
         for i_iter_val, (_,_,test_grid,_,test_pt_fea,test_index) in enumerate(test_dataset_loader):
 #             print(" THe enumuerated values test_grid:{} test_pt_feat:{} test_index:{}".format(test_grid,test_pt_fea,test_index))
