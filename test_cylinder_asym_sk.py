@@ -153,7 +153,7 @@ def main(args):
 
             predict_labels = torch.argmax(predict_labels, dim=1)
             predict_labels = predict_labels.cpu().detach().numpy()
-            pdb.set_trace()
+#             pdb.set_trace()
             # write to label file
             for count,i_test_grid in enumerate(test_grid):
                 test_pred_label = predict_labels[count,test_grid[count][:,0],test_grid[count][:,1],test_grid[count][:,2]]
