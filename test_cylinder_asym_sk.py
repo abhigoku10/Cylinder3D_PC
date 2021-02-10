@@ -11,6 +11,7 @@ import numpy as np
 import torch
 import torch.optim as optim
 from tqdm import tqdm
+import pdb
 
 from utils.metric_util import per_class_iu, fast_hist_crop
 from dataloader.pc_dataset import get_SemKITTI_label_name
@@ -152,6 +153,7 @@ def main(args):
 
             predict_labels = torch.argmax(predict_labels, dim=1)
             predict_labels = predict_labels.cpu().detach().numpy()
+            pdb.set_trace()
             # write to label file
             for count,i_test_grid in enumerate(test_grid):
                 test_pred_label = predict_labels[count,test_grid[count][:,0],test_grid[count][:,1],test_grid[count][:,2]]
