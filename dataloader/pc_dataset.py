@@ -79,7 +79,7 @@ class SemKITTI_sk(data.Dataset):
 #             print("Entered SemKITTI_sk -> self.return_ref ->index:{}".format(index))
             data_tuple += (raw_data[:, 3],)
 #         data_tuple+=(self.im_idx[index],)
-        return data_tuple
+        return data_tuple,self.im_idx[index]
     
 
 
