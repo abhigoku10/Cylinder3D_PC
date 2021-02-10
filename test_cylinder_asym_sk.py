@@ -123,7 +123,7 @@ def main(args):
     del val_vox_label, val_grid, val_pt_fea, val_grid_ten
     pbar.close()
     
-    print('Current val miou is %.3f ' % val_miou))
+    print('Current val miou is %.3f ' % val_miou)
     print('Inference time per %d is %.4f seconds\n' %
             (val_batch_size,np.mean(time_list)))
 
