@@ -79,8 +79,11 @@ def main(args):
 
 
     ##validation set resulsts 
+    print('#'*80)
+    print("Processing the inference pipeline")
+    print('#'*80)
     pbar = tqdm(total=len(val_dataset_loader))
-    print("THe length of the dataset : {} ".format(len(val_dataset_loader)))
+    print("THe length of the validation dataset : {} ".format(len(val_dataset_loader)))
     my_model.eval()
     hist_list = []
     time_list = []
@@ -130,39 +133,41 @@ def main(args):
 
 
     
-#     #####Testing inference 
-#     pbar = tqdm(total=len(test_dataset_loader))
+    #####Testing inference 
+    pbar = tqdm(total=len(test_dataset_loader))
+    print('#'*80)
+    print("Processing the inference pipeline")
+    print('#'*80)
+    with torch.no_grad():
+        for i_iter_val, (_,_, test_grid,_, test_pt_fea,test_index) in enumerate(
+                            test_dataset_loader):
 
-#     with torch.no_grad():
-#         for i_iter_val, (_,_, test_grid,_, test_pt_fea,test_index) in enumerate(
-#                             test_dataset_loader):
+            test_pt_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in
+                                            test_pt_fea]
+            test_grid_ten = [torch.from_numpy(i).to(pytorch_device) for i in test_grid]
+            predict_labels = my_model(test_pt_fea_ten, test_grid_ten)
 
-#             test_pt_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in
-#                                             test_pt_fea]
-#             test_grid_ten = [torch.from_numpy(i).to(pytorch_device) for i in test_grid]
-#             predict_labels = my_model(test_pt_fea_ten, test_grid_ten)
-
-#             predict_labels = torch.argmax(predict_labels, dim=1)
-#             predict_labels = predict_labels.cpu().detach().numpy()
-#             # write to label file
-#             for count,i_test_grid in enumerate(test_grid):
-#                 test_pred_label = predict_labels[count,test_grid[count][:,0],test_grid[count][:,1],test_grid[count][:,2]]
-#                 test_pred_label = train2SemKITTI(test_pred_label)
-#                 test_pred_label = np.expand_dims(test_pred_label,axis=1)
-#                 save_dir = test_pt_dataset.im_idx[test_index[count]]
-#                 _,dir2 = save_dir.split('/sequences/',1)
-#                 new_save_dir = output_path + '/sequences/' +dir2.replace('velodyne','predictions')[:-3]+'label'
-#                 if not os.path.exists(os.path.dirname(new_save_dir)):
-#                     try:
-#                         os.makedirs(os.path.dirname(new_save_dir))
-#                     except OSError as exc:
-#                         if exc.errno != errno.EEXIST:
-#                             raise
-#                 test_pred_label = test_pred_label.astype(np.uint32)
-#                 test_pred_label.tofile(new_save_dir)
-#             pbar.update(1)
-#     del test_grid,test_pt_fea,test_index
-#     pbar.close()
+            predict_labels = torch.argmax(predict_labels, dim=1)
+            predict_labels = predict_labels.cpu().detach().numpy()
+            # write to label file
+            for count,i_test_grid in enumerate(test_grid):
+                test_pred_label = predict_labels[count,test_grid[count][:,0],test_grid[count][:,1],test_grid[count][:,2]]
+                test_pred_label = train2SemKITTI(test_pred_label)
+                test_pred_label = np.expand_dims(test_pred_label,axis=1)
+                save_dir = test_pt_dataset.im_idx[test_index[count]]
+                _,dir2 = save_dir.split('/sequences/',1)
+                new_save_dir = output_path + '/sequences/' +dir2.replace('velodyne','predictions')[:-3]+'label'
+                if not os.path.exists(os.path.dirname(new_save_dir)):
+                    try:
+                        os.makedirs(os.path.dirname(new_save_dir))
+                    except OSError as exc:
+                        if exc.errno != errno.EEXIST:
+                            raise
+                test_pred_label = test_pred_label.astype(np.uint32)
+                test_pred_label.tofile(new_save_dir)
+            pbar.update(1)
+    del test_grid,test_pt_fea,test_index
+    pbar.close()
 # print('Predicted test labels are saved in %s. Need to be shifted to original label format before submitting to the Competition website.' % output_path)
 # print('Remapping script can be found in semantic-kitti-api.')
 
