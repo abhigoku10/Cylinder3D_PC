@@ -161,15 +161,15 @@ def main(args):
 #                 _,dir2 = save_dir.split('/sequences/',1)
 #                 new_save_dir = output_path + '/sequences/' +dir2.replace('velodyne','predictions')[:-3]+'label'
  
-                new_save_dir = output_path + 'sequences/' 
-                if not os.path.exists(os.path.dirname(new_save_dir)):
-                    try:
-                        os.makedirs(os.path.dirname(new_save_dir))
-                    except OSError as exc:
-                        if exc.errno != errno.EEXIST:
-                            raise
+                
+#                 if not os.path.exists(os.path.dirname(new_save_dir)):
+#                     try:
+#                         os.makedirs(os.path.dirname(new_save_dir))
+#                     except OSError as exc:
+#                         if exc.errno != errno.EEXIST:
+#                             raise
                 test_pred_label = test_pred_label.astype(np.uint32)
-                test_pred_label.tofile(new_save_dir)
+#                 test_pred_label.tofile(new_save_dir)
             pbar.update(1)
     del test_grid,test_pt_fea,test_index
     pbar.close()
