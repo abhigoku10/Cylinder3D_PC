@@ -57,8 +57,7 @@ val_data_loader:
   batch_size: 1
   shuffle: False
   num_workers: 4
-
-###modified the test dataset loading 
+ 
 test_data_loader:
   #data_path: "/data/dataset/semantic_kitti/data_semkitti/dataset/sequences/"
   data_path: "/content/drive/MyDrive/PointCloudData/semantic_kitti_sample/sequences"
