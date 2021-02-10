@@ -77,7 +77,7 @@ class SemKITTI_sk(data.Dataset):
         data_tuple = (raw_data[:, :3], annotated_data.astype(np.uint8))
         if self.return_ref:
             print("Entered SemKITTI_sk -> self.return_ref ->index:{}".format(index))
-            data_tuple += (raw_data[:, 3],index)
+            data_tuple += (raw_data[:, 3],)
         return data_tuple
 
 
