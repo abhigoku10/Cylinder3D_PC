@@ -108,6 +108,8 @@ def main(args):
             predict_labels = my_model(val_pt_fea_ten, val_grid_ten, val_batch_size)
             torch.cuda.synchronize()
             time_list.append(time.time()-start_time)
+            
+            predict_labels = torch.nn.functional.softmax(predict_labels)
 
             predict_labels = torch.argmax(predict_labels, dim=1)
             predict_labels = predict_labels.cpu().detach().numpy()
