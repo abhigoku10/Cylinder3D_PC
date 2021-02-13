@@ -160,6 +160,8 @@ def main(args):
             test_grid_ten = [torch.from_numpy(i).to(pytorch_device) for i in test_grid]
          
             predict_labels = my_model(test_pt_fea_ten, test_grid_ten,test_batch_size)
+            
+            predict_labels = torch.nn.functional.softmax(predict_labels)
 
             predict_labels = torch.argmax(predict_labels, dim=1)
             predict_labels = predict_labels.cpu().detach().numpy()
