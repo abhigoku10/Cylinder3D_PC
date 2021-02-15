@@ -85,6 +85,7 @@ def main(args):
                 hist_list = []
                 val_loss_list = []
                 with torch.no_grad():
+                    print(" Processing the validation part {}".foramt(i_iter))
                     for i_iter_val, (_, val_vox_label, val_grid, val_pt_labs, val_pt_fea) in enumerate(
                             val_dataset_loader):
 
@@ -97,6 +98,7 @@ def main(args):
                         # aux_loss = loss_fun(aux_outputs, point_label_tensor)
                         loss = lovasz_softmax(torch.nn.functional.softmax(predict_labels).detach(), val_label_tensor,
                                               ignore=0) + loss_func(predict_labels.detach(), val_label_tensor)
+                        print(" The loss value before prediction {}".foramt(loss))
                         predict_labels = torch.argmax(predict_labels, dim=1)
                         predict_labels = predict_labels.cpu().detach().numpy()
                         for count, i_val_grid in enumerate(val_grid):
@@ -110,7 +112,8 @@ def main(args):
                 print('Validation per class iou: ')
                 for class_name, class_iou in zip(unique_label_str, iou):
                     print('%s : %.2f%%' % (class_name, class_iou * 100))
-                val_miou = np.nanmean(iou) * 100
+#                 val_miou = np.nanmean(iou) * 100
+                val_miou = np.nanmean(iou) * 10
                 del val_vox_label, val_grid, val_pt_fea, val_grid_ten
 
                 # save model if performance is improved
