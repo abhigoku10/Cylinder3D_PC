@@ -44,7 +44,7 @@ train_data_loader:
   data_path: "/content/drive/MyDrive/PointCloudData/semantic_kitti_sample/sequences/" 
   imageset: "train"
   return_ref: True
-  batch_size: 2
+  batch_size: 1
   shuffle: True
   num_workers: 4
 
@@ -70,7 +70,7 @@ train_params:
   model_load_path: "/content/drive/MyDrive/PointCloud_model/cyclinder3d_sk/model_save_backup.pt"
   model_save_path: "/content/drive/MyDrive/PointCloud_model/cyclinder3d_sk/model_save10.pt"
   checkpoint_every_n_steps: 4599
-  max_num_epochs: 40
+  max_num_epochs: 4
   eval_every_n_steps: 4599
   learning_rate: 0.001
 
