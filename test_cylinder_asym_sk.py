@@ -94,8 +94,8 @@ def main(args):
                             val_dataset_loader):
             print("The processingframe is : {}".format(i_iter_val))
             ##check if this is required 
-            val_vox_label = SemKITTI2train(val_vox_label)
-            val_pt_labs = SemKITTI2train(val_pt_labs)
+#             val_vox_label = SemKITTI2train(val_vox_label)
+#             val_pt_labs = SemKITTI2train(val_pt_labs)
 
             val_pt_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in
                                           val_pt_fea]
@@ -149,8 +149,8 @@ def main(args):
 
 
             ###to print the labels
-            test_vox_label = SemKITTI2train(test_vox_label)
-            test_pt_labs = SemKITTI2train(test_pt_labs)
+#             test_vox_label = SemKITTI2train(test_vox_label)
+#             test_pt_labs = SemKITTI2train(test_pt_labs)
             test_label_tensor = test_vox_label.type(torch.LongTensor).to(pytorch_device)
 
 
