@@ -76,7 +76,8 @@ def main(args):
 
     while epoch < train_hypers['max_num_epochs']:
         loss_list = []
-        pbar = tqdm(total=len(train_dataset_loader))
+#         pbar = tqdm(total=len(train_dataset_loader))
+        print( " THe training epoch is {}".format(epoch))
         time.sleep(10)
         # lr_scheduler.step(epoch)
         for i_iter, (_, train_vox_label, train_grid, _, train_pt_fea) in enumerate(train_dataset_loader):
@@ -117,9 +118,9 @@ def main(args):
                 del val_vox_label, val_grid, val_pt_fea, val_grid_ten
 
                 # save model if performance is improved
-                if best_val_miou < val_miou:
-                    best_val_miou = val_miou
-                    torch.save(my_model.state_dict(), model_save_path)
+#                 if best_val_miou < val_miou:
+#                     best_val_miou = val_miou
+                torch.save(my_model.state_dict(), model_save_path)
 
                 print('Current val miou is %.3f while the best val miou is %.3f' %
                       (val_miou, best_val_miou))
@@ -147,7 +148,7 @@ def main(args):
                     print('loss error')
 
             optimizer.zero_grad()
-            pbar.update(1)
+#             pbar.update(1)
             global_iter += 1
             if global_iter % check_iter == 0:
                 if len(loss_list) > 0:
@@ -155,7 +156,7 @@ def main(args):
                           (epoch, i_iter, np.mean(loss_list)))
                 else:
                     print('loss error')
-        pbar.close()
+#         pbar.close()
         epoch += 1
 
 
