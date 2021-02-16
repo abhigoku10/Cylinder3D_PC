@@ -185,7 +185,7 @@ def main(args):
 #                 test_pred_label = test_pred_label.astype(np.uint8)
                 upper_half = test_pred_label >> 16  # get upper half for instances
                 lower_half = test_pred_label & 0xFFFF  # get lower half for semantics
-                lower_half = remap_lut[lower_half]  # do the remapping of semantics
+#                 lower_half = remap_lut[lower_half]  # do the remapping of semantics
                 test_pred_label = (upper_half << 16) + lower_half  # reconstruct full label
                 test_pred_label = pred.astype(np.uint32)
      
