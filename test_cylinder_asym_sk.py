@@ -170,7 +170,7 @@ def main(args):
             # write to label file
             for count,i_test_grid in enumerate(test_grid):
                 test_pred_label = predict_labels[count,test_grid[count][:,0],test_grid[count][:,1],test_grid[count][:,2]]
-#                 test_pred_label = train2SemKITTI(test_pred_label)
+                test_pred_label = train2SemKITTI(test_pred_label)
                 test_pred_label = np.expand_dims(test_pred_label,axis=1)
 #                 save_dir = test_dataset_loader.im_idx[test_index[count]]
                 _,dir2 = filename[0].split('/sequences/',1)
@@ -181,8 +181,8 @@ def main(args):
                     except OSError as exc:
                         if exc.errno != errno.EEXIST:
                             raise
-#                 test_pred_label = test_pred_label.astype(np.uint32)
-                test_pred_label = test_pred_label.astype(np.uint8)
+                test_pred_label = test_pred_label.astype(np.uint32)
+#                 test_pred_label = test_pred_label.astype(np.uint8)
                 test_pred_label.tofile(new_save_dir)
 
             ##### To check the predicted results 
