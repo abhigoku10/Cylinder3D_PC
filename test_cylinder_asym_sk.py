@@ -181,7 +181,8 @@ def main(args):
                     except OSError as exc:
                         if exc.errno != errno.EEXIST:
                             raise
-                test_pred_label = test_pred_label.astype(np.uint32)
+#                 test_pred_label = test_pred_label.astype(np.uint32)
+                test_pred_label = test_pred_label.astype(np.uint8)
                 test_pred_label.tofile(new_save_dir)
 
             ##### To check the predicted results 
