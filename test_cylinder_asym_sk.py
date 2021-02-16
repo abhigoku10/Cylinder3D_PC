@@ -90,9 +90,9 @@ def main(args):
     time_list = []
     
     
-    # +100 hack making lut bigger just in case there are unknown labels
-    remap_lut = np.zeros((maxkey + 100), dtype=np.int32)
-    remap_lut[list(remapdict.keys())] = list(remapdict.values())
+#     # +100 hack making lut bigger just in case there are unknown labels
+#     remap_lut = np.zeros((maxkey + 100), dtype=np.int32)
+#     remap_lut[list(remapdict.keys())] = list(remapdict.values())
     
     
     with torch.no_grad():
@@ -188,11 +188,11 @@ def main(args):
                         if exc.errno != errno.EEXIST:
                             raise
 #                 test_pred_label = test_pred_label.astype(np.uint32)
-#                 test_pred_label = test_pred_label.astype(np.uint8)
-                upper_half = test_pred_label >> 16  # get upper half for instances
-                lower_half = test_pred_label & 0xFFFF  # get lower half for semantics
-                lower_half = remap_lut[lower_half]  # do the remapping of semantics
-                test_pred_label = (upper_half << 16) + lower_half  # reconstruct full label
+# #                 test_pred_label = test_pred_label.astype(np.uint8)
+#                 upper_half = test_pred_label >> 16  # get upper half for instances
+#                 lower_half = test_pred_label & 0xFFFF  # get lower half for semantics
+#                 lower_half = remap_lut[lower_half]  # do the remapping of semantics
+#                 test_pred_label = (upper_half << 16) + lower_half  # reconstruct full label
                 test_pred_label = test_pred_label.astype(np.uint32)
      
                         
