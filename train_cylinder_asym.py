@@ -139,8 +139,8 @@ def main(args):
             loss.backward()
             optimizer.step()
             loss_list.append(loss.item())
-
-            if global_iter % 1000 == 0:
+            if global_iter % 1 == 0:
+#             if global_iter % 1000 == 0:
                 if len(loss_list) > 0:
                     print('epoch %d iter %5d, loss: %.3f\n' %
                           (epoch, i_iter, np.mean(loss_list)))
