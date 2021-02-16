@@ -89,6 +89,12 @@ def main(args):
     hist_list = []
     time_list = []
     
+    
+    # +100 hack making lut bigger just in case there are unknown labels
+    remap_lut = np.zeros((maxkey + 100), dtype=np.int32)
+    remap_lut[list(remapdict.keys())] = list(remapdict.values())
+    
+    
     with torch.no_grad():
         for i_iter_val, (_, val_vox_label, val_grid, val_pt_labs, val_pt_fea) in enumerate(
                             val_dataset_loader):
@@ -185,7 +191,7 @@ def main(args):
 #                 test_pred_label = test_pred_label.astype(np.uint8)
                 upper_half = test_pred_label >> 16  # get upper half for instances
                 lower_half = test_pred_label & 0xFFFF  # get lower half for semantics
-#                 lower_half = remap_lut[lower_half]  # do the remapping of semantics
+                lower_half = remap_lut[lower_half]  # do the remapping of semantics
                 test_pred_label = (upper_half << 16) + lower_half  # reconstruct full label
                 test_pred_label = test_pred_label.astype(np.uint32)
      
