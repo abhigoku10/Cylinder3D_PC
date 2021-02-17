@@ -188,12 +188,7 @@ def main(args):
                     except OSError as exc:
                         if exc.errno != errno.EEXIST:
                             raise
-#                 test_pred_label = test_pred_label.astype(np.uint32)
-# #                 test_pred_label = test_pred_label.astype(np.uint8)
-#                 upper_half = test_pred_label >> 16  # get upper half for instances
-#                 lower_half = test_pred_label & 0xFFFF  # get lower half for semantics
-#                 lower_half = remap_lut[lower_half]  # do the remapping of semantics
-#                 test_pred_label = (upper_half << 16) + lower_half  # reconstruct full label
+                test_pred_label=get_SemKITTI_label_color(dataset_config["label_mapping"],test_pred_label):
                 test_pred_label = test_pred_label.astype(np.uint32)
 #                 print(" The test labels after conversion {}".format(max(test_pred_label, dim=1)))
      
