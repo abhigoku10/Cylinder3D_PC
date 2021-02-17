@@ -62,7 +62,7 @@ test_data_loader:
   return_ref: True
   batch_size: 1
   shuffle: False
-  num_workers: 4
+  num_workers: 0
 
 ###################
 ## Train params
