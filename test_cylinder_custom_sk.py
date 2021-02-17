@@ -79,7 +79,9 @@ def main(args):
     print('#'*60)
     print(len(test_dataset_loader))
     with torch.no_grad():
+        print("Inside torch nograd function")
         for i_iter_val, (_,test_vox_label,test_grid,test_pt_labs,test_pt_fea,test_index,filename) in enumerate(test_dataset_loader):
+            print("Inside for loop  function")
             print(" THe enumuerated values test_grid:{} test_pt_feat:{} test_index:{}".format(test_grid,test_pt_fea,test_index))
 
             test_label_tensor = test_vox_label.type(torch.LongTensor).to(pytorch_device)
@@ -138,8 +140,10 @@ def main(args):
         #     print('%s : %.2f%%' % (class_name, class_iou * 100))
         # test_miou = np.nanmean(iou) * 100
         # print('Current test miou is %.3f ' % test_miou)
+        print('Exiting the for loop function')
         print('Inference time per %d is %.4f seconds\n' % (test_batch_size,np.mean(time_list)))
     del test_vox_label, test_grid, test_pt_fea, test_grid_ten,test_index
+    print('Exiting the test functino')
     pbar.close()
 
 
