@@ -80,7 +80,7 @@ def main(args):
     print(len(test_dataset_loader))
     with torch.no_grad():
         for i_iter_val, (_,test_vox_label,test_grid,test_pt_labs,test_pt_fea,test_index,filename) in enumerate(test_dataset_loader):
-#             print(" THe enumuerated values test_grid:{} test_pt_feat:{} test_index:{}".format(test_grid,test_pt_fea,test_index))
+            print(" THe enumuerated values test_grid:{} test_pt_feat:{} test_index:{}".format(test_grid,test_pt_fea,test_index))
 
             test_label_tensor = test_vox_label.type(torch.LongTensor).to(pytorch_device)
 
