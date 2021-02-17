@@ -152,6 +152,23 @@ def get_SemKITTI_label_name(label_mapping):
 
     return SemKITTI_label_name
 
+### Converting the labels during predictions 
+
+def get_SemKITTI_label_color(label_mapping,pred):
+    with open(label_mapping, 'r') as stream:
+        semkittiyaml = yaml.safe_load(stream)
+   
+    rp_dict = semkittiyaml['learning_map_inv']
+    max_key = max(rp_dict.keys())
+    rp = np.zeros((max_key + 100), dtype = np.int32)
+    rp[list(rp_dict.keys())] = list(rp_dict.values())
+    uh = pred >> 16
+    lh = pred & 0xFFFF
+    lh = rp[lh]
+    pred = (uh << 16) + lh
+
+    return pred
+
 
 def get_nuScenes_label_name(label_mapping):
     with open(label_mapping, 'r') as stream:
