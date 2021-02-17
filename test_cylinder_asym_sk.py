@@ -67,62 +67,62 @@ def main(args):
                                                                   grid_size=grid_size)
 
 
-#     ##validation set resulsts 
-#     print('#'*80)
-#     print("Processing the validation section")
-#     print('#'*80)
-#     pbar = tqdm(total=len(val_dataset_loader))
-#     print("THe length of the validation dataset : {} ".format(len(val_dataset_loader)))
-#     my_model.eval()
-#     hist_list = []
-#     time_list = []
+    ##validation set resulsts 
+    print('#'*80)
+    print("Processing the validation section")
+    print('#'*80)
+    pbar = tqdm(total=len(val_dataset_loader))
+    print("THe length of the validation dataset : {} ".format(len(val_dataset_loader)))
+    my_model.eval()
+    hist_list = []
+    time_list = []
     
     
 
     
     
-#     with torch.no_grad():
-#         for i_iter_val, (_, val_vox_label, val_grid, val_pt_labs, val_pt_fea) in enumerate(
-#                             val_dataset_loader):
-#             print("The processingframe is : {}".format(i_iter_val))
+    with torch.no_grad():
+        for i_iter_val, (_, val_vox_label, val_grid, val_pt_labs, val_pt_fea) in enumerate(
+                            val_dataset_loader):
+            print("The processingframe is : {}".format(i_iter_val))
 
 
-#             val_pt_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in
-#                                           val_pt_fea]
-#             val_grid_ten = [torch.from_numpy(i).to(pytorch_device) for i in val_grid]
-#             val_label_tensor = val_vox_label.type(torch.LongTensor).to(pytorch_device)
+            val_pt_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in
+                                          val_pt_fea]
+            val_grid_ten = [torch.from_numpy(i).to(pytorch_device) for i in val_grid]
+            val_label_tensor = val_vox_label.type(torch.LongTensor).to(pytorch_device)
 
-#             ###similar to polar seg 
-#             torch.cuda.synchronize()
-#             start_time = time.time()
-#             predict_labels = my_model(val_pt_fea_ten, val_grid_ten, val_batch_size)
-#             torch.cuda.synchronize()
-#             time_list.append(time.time()-start_time)
+            ###similar to polar seg 
+            torch.cuda.synchronize()
+            start_time = time.time()
+            predict_labels = my_model(val_pt_fea_ten, val_grid_ten, val_batch_size)
+            torch.cuda.synchronize()
+            time_list.append(time.time()-start_time)
             
   
 
-#             predict_labels = torch.argmax(predict_labels, dim=1)
-#             predict_labels = predict_labels.cpu().detach().numpy()
-#             for count, i_val_grid in enumerate(val_grid):
-#                 hist_list.append(fast_hist_crop(predict_labels[
-#                                 count, val_grid[count][:, 0], val_grid[count][:, 1],
-#                                 val_grid[count][:, 2]], val_pt_labs[count],
-#                             unique_label))
-#             pbar.update(1)
+            predict_labels = torch.argmax(predict_labels, dim=1)
+            predict_labels = predict_labels.cpu().detach().numpy()
+            for count, i_val_grid in enumerate(val_grid):
+                hist_list.append(fast_hist_crop(predict_labels[
+                                count, val_grid[count][:, 0], val_grid[count][:, 1],
+                                val_grid[count][:, 2]], val_pt_labs[count],
+                            unique_label))
+            pbar.update(1)
 
-#     iou = per_class_iu(sum(hist_list))
-#     print('*'*80)
-#     print('Validation per class iou: ')
-#     print('*'*80)
-#     for class_name, class_iou in zip(unique_label_str, iou):
-#         print('%s : %.2f%%' % (class_name, class_iou * 100))
-#     val_miou = np.nanmean(iou) * 100
-#     del val_vox_label, val_grid, val_pt_fea, val_grid_ten
-#     pbar.close()
+    iou = per_class_iu(sum(hist_list))
+    print('*'*80)
+    print('Validation per class iou: ')
+    print('*'*80)
+    for class_name, class_iou in zip(unique_label_str, iou):
+        print('%s : %.2f%%' % (class_name, class_iou * 100))
+    val_miou = np.nanmean(iou) * 100
+    del val_vox_label, val_grid, val_pt_fea, val_grid_ten
+    pbar.close()
     
-#     print('Current val miou is %.3f ' % val_miou)
-#     print('Inference time per %d is %.4f seconds\n' %
-#             (val_batch_size,np.mean(time_list)))
+    print('Current val miou is %.3f ' % val_miou)
+    print('Inference time per %d is %.4f seconds\n' %
+            (val_batch_size,np.mean(time_list)))
 
 
     
@@ -176,22 +176,22 @@ def main(args):
                         
                 test_pred_label.tofile(new_save_dir)
 
-#             ##### To check the predicted results 
-#             for count, i_test_grid in enumerate(test_grid):
-#                 hist_list.append(fast_hist_crop(predict_labels[
-#                                 count, test_grid[count][:, 0], test_grid[count][:, 1],
-#                                 test_grid[count][:, 2]], test_pt_labs[count],
-#                             unique_label))
+            ##### To check the predicted results 
+            for count, i_test_grid in enumerate(test_grid):
+                hist_list.append(fast_hist_crop(predict_labels[
+                                count, test_grid[count][:, 0], test_grid[count][:, 1],
+                                test_grid[count][:, 2]], test_pt_labs[count],
+                            unique_label))
 
-#             pbar.update(1)
-#         iou = per_class_iu(sum(hist_list))
-#         print('*'*80)
-#         print('Testing per class iou: ')
-#         print('*'*80)
-#         for class_name, class_iou in zip(unique_label_str, iou):
-#             print('%s : %.2f%%' % (class_name, class_iou * 100))
-#         test_miou = np.nanmean(iou) * 100
-#         print('Current test miou is %.3f ' % test_miou)
+            pbar.update(1)
+        iou = per_class_iu(sum(hist_list))
+        print('*'*80)
+        print('Testing per class iou: ')
+        print('*'*80)
+        for class_name, class_iou in zip(unique_label_str, iou):
+            print('%s : %.2f%%' % (class_name, class_iou * 100))
+        test_miou = np.nanmean(iou) * 100
+        print('Current test miou is %.3f ' % test_miou)
         print('Inference time per %d is %.4f seconds\n' %
         (test_batch_size,np.mean(time_list)))
     del test_vox_label, test_grid, test_pt_fea, test_grid_ten,test_index
