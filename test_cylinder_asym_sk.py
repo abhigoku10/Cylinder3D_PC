@@ -24,18 +24,6 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-def SemKITTI2train(label):
-    if isinstance(label, list):
-        return [SemKITTI2train_single(a) for a in label]
-    else:
-        return SemKITTI2train_single(label)
-
-def SemKITTI2train_single(label):
-    return label - 1 # uint8 trick
-
-def train2SemKITTI(input_label):
-    # delete 0 label (uses uint8 trick : 0 - 1 = 255 )
-    return input_label + 1
 
 
 def main(args):
@@ -90,18 +78,14 @@ def main(args):
     time_list = []
     
     
-#     # +100 hack making lut bigger just in case there are unknown labels
-#     remap_lut = np.zeros((maxkey + 100), dtype=np.int32)
-#     remap_lut[list(remapdict.keys())] = list(remapdict.values())
+
     
     
     with torch.no_grad():
         for i_iter_val, (_, val_vox_label, val_grid, val_pt_labs, val_pt_fea) in enumerate(
                             val_dataset_loader):
             print("The processingframe is : {}".format(i_iter_val))
-            ##check if this is required 
-#             val_vox_label = SemKITTI2train(val_vox_label)
-#             val_pt_labs = SemKITTI2train(val_pt_labs)
+
 
             val_pt_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in
                                           val_pt_fea]
@@ -115,7 +99,7 @@ def main(args):
             torch.cuda.synchronize()
             time_list.append(time.time()-start_time)
             
-            #predict_labels = torch.nn.functional.softmax(predict_labels)
+  
 
             predict_labels = torch.argmax(predict_labels, dim=1)
             predict_labels = predict_labels.cpu().detach().numpy()
@@ -153,10 +137,6 @@ def main(args):
         for i_iter_val, (_,test_vox_label,test_grid,test_pt_labs,test_pt_fea,test_index,filename) in enumerate(test_dataset_loader):
 #             print(" THe enumuerated values test_grid:{} test_pt_feat:{} test_index:{}".format(test_grid,test_pt_fea,test_index))
 
-
-            ###to print the labels
-#             test_vox_label = SemKITTI2train(test_vox_label)
-#             test_pt_labs = SemKITTI2train(test_pt_labs)
             test_label_tensor = test_vox_label.type(torch.LongTensor).to(pytorch_device)
 
 
@@ -167,7 +147,7 @@ def main(args):
          
             predict_labels = my_model(test_pt_fea_ten, test_grid_ten,test_batch_size)
             
-#             predict_labels = torch.nn.functional.softmax(predict_labels)
+
 
             predict_labels = torch.argmax(predict_labels, dim=1)
             predict_labels = predict_labels.cpu().detach().numpy()
@@ -176,7 +156,7 @@ def main(args):
             # write to label file
             for count,i_test_grid in enumerate(test_grid):
                 test_pred_label = predict_labels[count,test_grid[count][:,0],test_grid[count][:,1],test_grid[count][:,2]]
-#                 test_pred_label = train2SemKITTI(test_pred_label)
+
                 test_pred_label = np.expand_dims(test_pred_label,axis=1)
 #                 print(" The test labels befor conversion {}".format(max(test_pred_label, dim=1)))
 #                 save_dir = test_dataset_loader.im_idx[test_index[count]]
