@@ -73,10 +73,10 @@ def main(args):
     
    #####Testing inference 
     pbar = tqdm(total=len(test_dataset_loader))
-    print('#'*80)
+    print('#'*60)
     print("Processing the Testing pipeline")
     print("The length of the test dataset is {}".format(len(test_dataset_loader)))
-    print('#'*80)
+    print('#'*60)
     print(len(test_dataset_loader))
     with torch.no_grad():
         for i_iter_val, (_,test_vox_label,test_grid,test_pt_labs,test_pt_fea,test_index,filename) in enumerate(test_dataset_loader):
@@ -89,6 +89,7 @@ def main(args):
             test_pt_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in
                                             test_pt_fea]
             test_grid_ten = [torch.from_numpy(i).to(pytorch_device) for i in test_grid]
+            print("Passing the data into the trained model")
          
             predict_labels = my_model(test_pt_fea_ten, test_grid_ten,test_batch_size)
             
