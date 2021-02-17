@@ -178,7 +178,7 @@ def main(args):
                 test_pred_label = predict_labels[count,test_grid[count][:,0],test_grid[count][:,1],test_grid[count][:,2]]
 #                 test_pred_label = train2SemKITTI(test_pred_label)
                 test_pred_label = np.expand_dims(test_pred_label,axis=1)
-                print(" The test labels befor conversion {}".format(torch.argmax(test_pred_label, dim=1)))
+                print(" The test labels befor conversion {}".format(max(test_pred_label, dim=1)))
 #                 save_dir = test_dataset_loader.im_idx[test_index[count]]
                 _,dir2 = filename[0].split('/sequences/',1)
                 new_save_dir = output_path + '/sequences/' +dir2.replace('velodyne','predictions')[:-3]+'label'                
@@ -195,7 +195,7 @@ def main(args):
 #                 lower_half = remap_lut[lower_half]  # do the remapping of semantics
 #                 test_pred_label = (upper_half << 16) + lower_half  # reconstruct full label
 #                 test_pred_label = test_pred_label.astype(np.uint32)
-                print(" The test labels after conversion {}".format(torch.argmax(test_pred_label, dim=1)))
+                print(" The test labels after conversion {}".format(max(test_pred_label, dim=1)))
      
                         
                         
