@@ -67,7 +67,7 @@ def main(args):
                                                                   grid_size=grid_size)
 
 
-    ##validation set resulsts 
+    ### Validation inference pipeline starts  
     print('#'*80)
     print("Processing the validation section")
     print('#'*80)
@@ -126,7 +126,7 @@ def main(args):
 
 
     
-   #####Testing inference 
+   #####Testing inference pipeline starts 
     pbar = tqdm(total=len(test_dataset_loader))
     print('#'*80)
     print("Processing the Testing pipeline")
