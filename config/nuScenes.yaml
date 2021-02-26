@@ -56,6 +56,16 @@ val_data_loader:
   shuffle: False
   num_workers: 4
 
+###################
+## testing params
+test_data_loader:
+  data_path: "/data/dataset/nuScenes/"
+  imageset: "/data/dataset/nuScenes/nuscenes_infos_val.pkl"
+  return_ref: True
+  batch_size: 1
+  shuffle: False
+  num_workers: 1
+
 
 ###################
 ## Train params
@@ -66,3 +76,11 @@ train_params:
   max_num_epochs: 40
   eval_every_n_steps: 4599
   learning_rate: 0.001
+
+
+###################
+## Test params
+test_params:
+  model_load_path: "./model_load_dir_nuscenes/model_load.pt"
+  output_save_path: "/content/drive/MyDrive/PointCloud_model/cyclinder3d_sk/"
+  

@@ -47,7 +47,7 @@ class cylinder_dataset_nuscenes(data.Dataset):
         return len(self.point_cloud_dataset)
 
     def __getitem__(self, index):
-        data = self.point_cloud_dataset[index]
+        data,fname = self.point_cloud_dataset[index]
         if len(data) == 2:
             xyz, labels = data
         elif len(data) == 3:
@@ -128,7 +128,7 @@ class cylinder_dataset_nuscenes(data.Dataset):
             return_fea = np.concatenate((return_xyz, sig[..., np.newaxis]), axis=1)
 
         if self.return_test:
-            data_tuple += (grid_ind, labels, return_fea, index)
+            data_tuple += (grid_ind, labels, return_fea, index,fname)
         else:
             data_tuple += (grid_ind, labels, return_fea)
         return data_tuple

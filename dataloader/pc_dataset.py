@@ -39,14 +39,14 @@ class SemKITTI_sk(data.Dataset):
             split = semkittiyaml['split']['train']
         elif imageset == 'val':
             split = semkittiyaml['split']['valid']
-            print('*'*60)
-            print("The valid splits are :{}".format(split))
-            print('*'*60)
+            # print('*'*60)
+            # print("The valid splits are :{}".format(split))
+            # print('*'*60)
         elif imageset == 'test':
             split = semkittiyaml['split']['test']
-            print('*'*60)
-            print("The test splits are :{}".format(split))
-            print('*'*60)
+            # print('*'*60)
+            # print("The test splits are :{}".format(split))
+            # print('*'*60)
         else:
             raise Exception('Split must be train/val/test')
 
@@ -118,7 +118,7 @@ class SemKITTI_nusc(data.Dataset):
         data_tuple = (points[:, :3], points_label.astype(np.uint8))
         if self.return_ref:
             data_tuple += (points[:, 3],)
-        return data_tuple
+        return data_tuple,self.nusc.dataroot
 
 
 def absoluteFilePaths(directory):
@@ -153,7 +153,6 @@ def get_SemKITTI_label_name(label_mapping):
     return SemKITTI_label_name
 
 ### Converting the labels during predictions 
-
 def get_SemKITTI_label_color(label_mapping,pred):
     with open(label_mapping, 'r') as stream:
         semkittiyaml = yaml.safe_load(stream)
@@ -179,3 +178,20 @@ def get_nuScenes_label_name(label_mapping):
         nuScenes_label_name[val_] = nuScenesyaml['labels_16'][val_]
 
     return nuScenes_label_name
+
+    
+### Converting the labels during predictions 
+def get_nuScenes_label_color(label_mapping,pred):
+    with open(label_mapping, 'r') as stream:
+        nuScenesyaml = yaml.safe_load(stream)
+   
+    rp_dict = nuScenesyaml['learning_map']
+    max_key = max(rp_dict.keys())
+    rp = np.zeros((max_key + 100), dtype = np.int32)
+    rp[list(rp_dict.keys())] = list(rp_dict.values())
+    uh = pred >> 16
+    lh = pred & 0xFFFF
+    lh = rp[lh]
+    pred = (uh << 16) + lh
+
+    return pred

@@ -27,7 +27,9 @@ warnings.filterwarnings("ignore")
 
 
 def main(args):
-    pytorch_device = torch.device('cuda:0')
+
+
+    pytorch_device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
 
     config_path = args.config_path
 
@@ -48,7 +50,7 @@ def main(args):
     ignore_label = dataset_config['ignore_label']
 
     model_load_path = test_hypers['model_load_path']
-    # model_save_path = test_hypers['model_save_path']
+    
     output_path=test_hypers['output_save_path']
 
     SemKITTI_label_name = get_SemKITTI_label_name(dataset_config["label_mapping"])
@@ -81,9 +83,7 @@ def main(args):
     with torch.no_grad():
         print("Inside torch nograd function")
         for i_iter_val, (_,test_vox_label,test_grid,test_pt_labs,test_pt_fea,test_index,filename) in enumerate(test_dataset_loader):
-            print("Inside for loop  function")
-            print(" THe enumuerated values test_grid:{} test_pt_feat:{} test_index:{}".format(test_grid,test_pt_fea,test_index))
-
+            
             test_label_tensor = test_vox_label.type(torch.LongTensor).to(pytorch_device)
 
 
@@ -91,9 +91,25 @@ def main(args):
             test_pt_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in
                                             test_pt_fea]
             test_grid_ten = [torch.from_numpy(i).to(pytorch_device) for i in test_grid]
-            print("Passing the data into the trained model")
+
+                        ### Model Prediction timing
+            if torch.cuda.is_available() : 
+                torch.cuda.synchronize()
+                start_time = torch.cuda.Event(enable_timing=True)
+                end_time = torch.cuda.Event(enable_timing=True)
+                start_time.record()
+            else:
+                start_time = time.time()
          
             predict_labels = my_model(test_pt_fea_ten, test_grid_ten,test_batch_size)
+
+            if torch.cuda.is_available() :
+                torch.cuda.synchronize() ## waiting for al the operations to be completed 
+                end_time = end_time.record() 
+            
+            else : end_time=time.time()
+
+            time_list.append(end_time-start_time)           
             
 
 
@@ -101,13 +117,12 @@ def main(args):
             predict_labels = predict_labels.cpu().detach().numpy()
            
 
-            # write to label file
+             ### Writing the prediction to label file
             for count,i_test_grid in enumerate(test_grid):
                 test_pred_label = predict_labels[count,test_grid[count][:,0],test_grid[count][:,1],test_grid[count][:,2]]
 
                 test_pred_label = np.expand_dims(test_pred_label,axis=1)
-#                 print(" The test labels befor conversion {}".format(max(test_pred_label, dim=1)))
-#                 save_dir = test_dataset_loader.im_idx[test_index[count]]
+
                 _,dir2 = filename[0].split('/sequences/',1)
                 new_save_dir = output_path + '/sequences/' +dir2.replace('velodyne','predictions')[:-3]+'label'                
                 if not os.path.exists(os.path.dirname(new_save_dir)):
@@ -118,8 +133,7 @@ def main(args):
                             raise
                 test_pred_label=get_SemKITTI_label_color(dataset_config["label_mapping"],test_pred_label)
                 test_pred_label = test_pred_label.astype(np.uint32)
-#                 print(" The test labels after conversion {}".format(max(test_pred_label, dim=1)))
-     
+#                
                         
                         
                 test_pred_label.tofile(new_save_dir)
@@ -140,10 +154,9 @@ def main(args):
         #     print('%s : %.2f%%' % (class_name, class_iou * 100))
         # test_miou = np.nanmean(iou) * 100
         # print('Current test miou is %.3f ' % test_miou)
-        print('Exiting the for loop function')
         print('Inference time per %d is %.4f seconds\n' % (test_batch_size,np.mean(time_list)))
     del test_vox_label, test_grid, test_pt_fea, test_grid_ten,test_index
-    print('Exiting the test functino')
+    
     pbar.close()
 
 

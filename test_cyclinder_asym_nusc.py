@@ -3,6 +3,8 @@
 # @file: train_cylinder_asym.py
 
 
+### Have to be tested 
+
 import os
 import time
 import argparse
@@ -11,23 +13,21 @@ import numpy as np
 import torch
 import torch.optim as optim
 from tqdm import tqdm
-import pdb
 
 from utils.metric_util import per_class_iu, fast_hist_crop
-from dataloader.pc_dataset import get_SemKITTI_label_name,get_SemKITTI_label_color
+from dataloader.pc_dataset import get_nuScenes_label_name,get_nuScenes_label_color
 from builder import data_builder, model_builder, loss_builder
 from config.config import load_config_data
 
-from utils.load_save_util import load_checkpoint
+from utils.load_save_util import load_checkpoint, load_checkpoint_1b1
 
 import warnings
 
 warnings.filterwarnings("ignore")
 
 
-
 def main(args):
-    pytorch_device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
+    pytorch_device = torch.device('cuda:0')
 
     config_path = args.config_path
 
@@ -48,142 +48,87 @@ def main(args):
     ignore_label = dataset_config['ignore_label']
 
     model_load_path = test_hypers['model_load_path']
-    
     output_path=test_hypers['output_save_path']
 
-    SemKITTI_label_name = get_SemKITTI_label_name(dataset_config["label_mapping"])
+    SemKITTI_label_name = get_nuScenes_label_name(dataset_config["label_mapping"])
     unique_label = np.asarray(sorted(list(SemKITTI_label_name.keys())))[1:] - 1
     unique_label_str = [SemKITTI_label_name[x] for x in unique_label + 1]
 
     my_model = model_builder.build(model_config)
     if os.path.exists(model_load_path):
-        my_model = load_checkpoint(model_load_path, my_model)
+        my_model = load_checkpoint_1b1(model_load_path, my_model)
 
     my_model.to(pytorch_device)
     
-    test_dataset_loader, val_dataset_loader = data_builder.build_valtest(dataset_config,
+    test_dataset_loader, val_dataset_loader = data_builder.build(dataset_config,
                                                                   test_dataloader_config,
                                                                   val_dataloader_config,
                                                                   grid_size=grid_size)
 
-
-    ### Validation inference pipeline starts  
-    print('#'*80)
-    print("Processing the validation section")
-    print('#'*80)
+    #### Validation module####
+   
+    print('*'*80)
+    print("Processing the Validation section of Nuscenes data")
+    print('*'*80)   
     pbar = tqdm(total=len(val_dataset_loader))
-    print("THe length of the validation dataset : {} ".format(len(val_dataset_loader)))
+    time.sleep(10)
     my_model.eval()
     hist_list = []
-    time_list = []
-    
-    
-   
+
     with torch.no_grad():
         for i_iter_val, (_, val_vox_label, val_grid, val_pt_labs, val_pt_fea) in enumerate(
-                            val_dataset_loader):
-            print("The processingframe is : {}".format(i_iter_val))
-
+                val_dataset_loader):
 
             val_pt_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in
-                                          val_pt_fea]
+                                val_pt_fea]
             val_grid_ten = [torch.from_numpy(i).to(pytorch_device) for i in val_grid]
             val_label_tensor = val_vox_label.type(torch.LongTensor).to(pytorch_device)
 
-            
-            ### Model Prediction timing
-            if torch.cuda.is_available() : 
-                torch.cuda.synchronize()
-                start_time = torch.cuda.Event(enable_timing=True)
-                end_time = torch.cuda.Event(enable_timing=True)
-                start_time.record()
-            else:
-                start_time = time.time()
-
             predict_labels = my_model(val_pt_fea_ten, val_grid_ten, val_batch_size)
-
-            if torch.cuda.is_available() :
-                torch.cuda.synchronize() ## waiting for al the operations to be completed 
-                end_time = end_time.record() 
             
-            else : end_time=time.time()
-
-            time_list.append(end_time-start_time)
-            
-  
             predict_labels = torch.argmax(predict_labels, dim=1)
             predict_labels = predict_labels.cpu().detach().numpy()
             for count, i_val_grid in enumerate(val_grid):
                 hist_list.append(fast_hist_crop(predict_labels[
-                                count, val_grid[count][:, 0], val_grid[count][:, 1],
-                                val_grid[count][:, 2]], val_pt_labs[count],
-                            unique_label))
+                                                    count, val_grid[count][:, 0], val_grid[count][:, 1],
+                                                    val_grid[count][:, 2]], val_pt_labs[count],
+                                                unique_label))
             pbar.update(1)
+            
+            iou = per_class_iu(sum(hist_list))
+            print('Validation per class iou: ')
+            for class_name, class_iou in zip(unique_label_str, iou):
+                print('%s : %.2f%%' % (class_name, class_iou * 100))
+            val_miou = np.nanmean(iou) * 100
+            del val_vox_label, val_grid, val_pt_fea, val_grid_ten
 
-    iou = per_class_iu(sum(hist_list))
-    print('*'*80)
-    print('Validation per class iou: ')
-    print('*'*80)
-    for class_name, class_iou in zip(unique_label_str, iou):
-        print('%s : %.2f%%' % (class_name, class_iou * 100))
-    val_miou = np.nanmean(iou) * 100
-    del val_vox_label, val_grid, val_pt_fea, val_grid_ten
+
+            print('Current val miou is %.3f ' % (val_miou))
+
     pbar.close()
-    
-    print('Current val miou is %.3f ' % val_miou)
-    print('Inference time per %d is %.4f seconds\n' %
-            (val_batch_size,np.mean(time_list)))
-
-
-    
-   #####Testing inference pipeline starts 
-    pbar = tqdm(total=len(test_dataset_loader))
-    print('#'*80)
-    print("Processing the Testing pipeline")
+     #### Testing  module#### 
+    print('*'*80)
+    print("Processing the Testing section of Nuscenes data")
+    print('*'*80) 
     print("The length of the test dataset is {}".format(len(test_dataset_loader)))
-    print('#'*80)
-    print(len(test_dataset_loader))
 
+    pbar = tqdm(total=len(test_dataset_loader))
     hist_list = []
     time_list = []
 
     with torch.no_grad():
         for i_iter_val, (_,test_vox_label,test_grid,test_pt_labs,test_pt_fea,test_index,filename) in enumerate(test_dataset_loader):
-
+#             
             test_label_tensor = test_vox_label.type(torch.LongTensor).to(pytorch_device)
-
-
-
             test_pt_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in
                                             test_pt_fea]
-            test_grid_ten = [torch.from_numpy(i).to(pytorch_device) for i in test_grid]
-
-
-                        ### Model Prediction timing
-            if torch.cuda.is_available() : 
-                torch.cuda.synchronize()
-                start_time = torch.cuda.Event(enable_timing=True)
-                end_time = torch.cuda.Event(enable_timing=True)
-                start_time.record()
-            else:
-                start_time = time.time()
-         
+            test_grid_ten = [torch.from_numpy(i).to(pytorch_device) for i in test_grid]         
             predict_labels = my_model(test_pt_fea_ten, test_grid_ten,test_batch_size)
-
-            if torch.cuda.is_available() :
-                torch.cuda.synchronize() ## waiting for al the operations to be completed 
-                end_time = end_time.record() 
-            
-            else : end_time=time.time()
-
-            time_list.append(end_time-start_time)           
-
-
             predict_labels = torch.argmax(predict_labels, dim=1)
             predict_labels = predict_labels.cpu().detach().numpy()
            
 
-            ### Writing the prediction to label file 
+            # write to label file
             for count,i_test_grid in enumerate(test_grid):
                 test_pred_label = predict_labels[count,test_grid[count][:,0],test_grid[count][:,1],test_grid[count][:,2]]
 
@@ -197,14 +142,14 @@ def main(args):
                     except OSError as exc:
                         if exc.errno != errno.EEXIST:
                             raise
-                test_pred_label=get_SemKITTI_label_color(dataset_config["label_mapping"],test_pred_label)
+
+                 ####need to add this module        
+                test_pred_label=get_nuScenes_label_color(dataset_config["label_mapping"],test_pred_label)
                 test_pred_label = test_pred_label.astype(np.uint32)
-    
-                        
-                        
+#          
                 test_pred_label.tofile(new_save_dir)
 
-            ##### TO generate the metrics only if label file is present 
+            ##### To check the predicted results 
             for count, i_test_grid in enumerate(test_grid):
                 hist_list.append(fast_hist_crop(predict_labels[
                                 count, test_grid[count][:, 0], test_grid[count][:, 1],
@@ -220,15 +165,17 @@ def main(args):
             print('%s : %.2f%%' % (class_name, class_iou * 100))
         test_miou = np.nanmean(iou) * 100
         print('Current test miou is %.3f ' % test_miou)
-        print('Inference time per %d is %.4f seconds\n' % (test_batch_size,np.mean(time_list)))
+        print('Inference time per %d is %.4f seconds\n' %
+        (test_batch_size,np.mean(time_list)))
     del test_vox_label, test_grid, test_pt_fea, test_grid_ten,test_index
     pbar.close()
+  
 
 
 if __name__ == '__main__':
     # Testing settings
     parser = argparse.ArgumentParser(description='')
-    parser.add_argument('-y', '--config_path', default='config/semantickitti.yaml')
+    parser.add_argument('-y', '--config_path', default='config/nuScenes.yaml')
     args = parser.parse_args()
 
     print(' '.join(sys.argv))
