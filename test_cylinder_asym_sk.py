@@ -197,7 +197,8 @@ def main(args):
                     except OSError as exc:
                         if exc.errno != errno.EEXIST:
                             raise
-                test_pred_label=get_SemKITTI_label_color(dataset_config["label_mapping"],test_pred_label)
+                ### need to check if this below line is required 
+                # test_pred_label=get_SemKITTI_label_color(dataset_config["label_mapping"],test_pred_label)
                 test_pred_label = test_pred_label.astype(np.uint32)
     
                         

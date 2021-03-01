@@ -41,26 +41,26 @@ dataset_params:
 ###################
 ## Data_loader options
 train_data_loader:
-  data_path: "/data/dataset/nuScenes/"
-  imageset: "/data/dataset/nuScenes/nuscenes_infos_train.pkl"
+  data_path: "/home/abhilash.sk/ZZZZ_Project/PSA_Lidarpc/dataset/nusc/v1.0-mini/"
+  imageset: "/home/abhilash.sk/ZZZZ_Project/PSA_Lidarpc/dataset/nusc/v1.0-mini/infos_val.pkl"
   return_ref: True
   batch_size: 2
   shuffle: True
   num_workers: 4
 
 val_data_loader:
-  data_path: "/data/dataset/nuScenes/"
-  imageset: "/data/dataset/nuScenes/nuscenes_infos_val.pkl"
+  data_path: "/home/abhilash.sk/ZZZZ_Project/PSA_Lidarpc/dataset/nusc/v1.0-mini/"
+  imageset: "/home/abhilash.sk/ZZZZ_Project/PSA_Lidarpc/dataset/nusc/v1.0-mini/infos_val.pkl"
   return_ref: True
   batch_size: 1
   shuffle: False
-  num_workers: 4
+  num_workers: 1
 
 ###################
 ## testing params
 test_data_loader:
-  data_path: "/data/dataset/nuScenes/"
-  imageset: "/data/dataset/nuScenes/nuscenes_infos_val.pkl"
+  data_path: "/home/abhilash.sk/ZZZZ_Project/PSA_Lidarpc/dataset/nusc/v1.0-mini/"
+  imageset: "/home/abhilash.sk/ZZZZ_Project/PSA_Lidarpc/dataset/nusc/v1.0-mini/infos_val.pkl"
   return_ref: True
   batch_size: 1
   shuffle: False
@@ -70,8 +70,8 @@ test_data_loader:
 ###################
 ## Train params
 train_params:
-  model_load_path: "./model_load_dir_nuscenes/model_load.pt"
-  model_save_path: "./model_save_dir_nuscenes/model_save.pt"
+  model_load_path: "/home/abhilash.sk/ZZZZ_Project/PSA_Lidarpc/Cylinder3D_PC/pretrained_model/model_load_nuscenes.pt"
+  model_save_path: "/home/abhilash.sk/ZZZZ_Project/PSA_Lidarpc/Cylinder3D_PC/pretrained_model/model_save.pt"
   checkpoint_every_n_steps: 4599
   max_num_epochs: 40
   eval_every_n_steps: 4599
@@ -81,6 +81,6 @@ train_params:
 ###################
 ## Test params
 test_params:
-  model_load_path: "./model_load_dir_nuscenes/model_load.pt"
-  output_save_path: "/content/drive/MyDrive/PointCloud_model/cyclinder3d_sk/"
+  model_load_path: "/home/abhilash.sk/ZZZZ_Project/PSA_Lidarpc/Cylinder3D_PC/pretrained_model/model_load_nuscenes.pt"
+  output_save_path: "/home/abhilash.sk/ZZZZ_Project/PSA_Lidarpc/Cylinder3D_PC"
   

@@ -7,6 +7,7 @@ import numpy as np
 from torch.utils import data
 import yaml
 import pickle
+import pdb
 
 REGISTERED_PC_DATASET_CLASSES = {}
 
@@ -95,7 +96,7 @@ class SemKITTI_nusc(data.Dataset):
         with open(label_mapping, 'r') as stream:
             nuscenesyaml = yaml.safe_load(stream)
         self.learning_map = nuscenesyaml['learning_map']
-
+        # pdb.set_trace()
         self.nusc_infos = data['infos']
         self.data_path = data_path
         self.nusc = nusc
@@ -106,7 +107,8 @@ class SemKITTI_nusc(data.Dataset):
 
     def __getitem__(self, index):
         info = self.nusc_infos[index]
-        lidar_path = info['lidar_path'][16:]
+        # lidar_path = info['lidar_path'][16:]
+        lidar_path = info['lidar_path'][:]
         lidar_sd_token = self.nusc.get('sample', info['token'])['data']['LIDAR_TOP']
         lidarseg_labels_filename = os.path.join(self.nusc.dataroot,
                                                 self.nusc.get('lidarseg', lidar_sd_token)['filename'])
@@ -118,8 +120,7 @@ class SemKITTI_nusc(data.Dataset):
         data_tuple = (points[:, :3], points_label.astype(np.uint8))
         if self.return_ref:
             data_tuple += (points[:, 3],)
-        return data_tuple,self.nusc.dataroot
-
+        return data_tuple ,lidar_path #Trying to pass info
 
 def absoluteFilePaths(directory):
     for dirpath, _, filenames in os.walk(directory):
@@ -185,7 +186,7 @@ def get_nuScenes_label_color(label_mapping,pred):
     with open(label_mapping, 'r') as stream:
         nuScenesyaml = yaml.safe_load(stream)
    
-    rp_dict = nuScenesyaml['learning_map']
+    rp_dict = nuScenesyaml['learning_map_inv']
     max_key = max(rp_dict.keys())
     rp = np.zeros((max_key + 100), dtype = np.int32)
     rp[list(rp_dict.keys())] = list(rp_dict.values())

@@ -48,6 +48,7 @@ class cylinder_dataset_nuscenes(data.Dataset):
 
     def __getitem__(self, index):
         data,fname = self.point_cloud_dataset[index]
+        # data= self.point_cloud_dataset[index]
         if len(data) == 2:
             xyz, labels = data
         elif len(data) == 3:
@@ -158,6 +159,16 @@ def collate_fn_BEV(data):
     point_label = [d[3] for d in data]
     xyz = [d[4] for d in data]
     return torch.from_numpy(data2stack), torch.from_numpy(label2stack), grid_ind_stack, point_label, xyz
+
+def collate_fn_BEV_test(data):    
+    data2stack=np.stack([d[0] for d in data]).astype(np.float32)
+    label2stack=np.stack([d[1] for d in data])
+    grid_ind_stack = [d[2] for d in data]
+    point_label = [d[3] for d in data]
+    xyz = [d[4] for d in data]
+    index = [d[5] for d in data]
+    f_name = [d[6] for d in data]
+    return torch.from_numpy(data2stack),torch.from_numpy(label2stack),grid_ind_stack,point_label,xyz,index,f_name
 
 
 # SemKITTI_label_name = {0: 'noise',

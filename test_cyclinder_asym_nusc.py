@@ -27,7 +27,8 @@ warnings.filterwarnings("ignore")
 
 
 def main(args):
-    pytorch_device = torch.device('cuda:0')
+    # pytorch_device = torch.device('cuda:0')
+    pytorch_device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
 
     config_path = args.config_path
 
@@ -60,7 +61,7 @@ def main(args):
 
     my_model.to(pytorch_device)
     
-    test_dataset_loader, val_dataset_loader = data_builder.build(dataset_config,
+    test_dataset_loader, val_dataset_loader = data_builder.build_valtest(dataset_config,
                                                                   test_dataloader_config,
                                                                   val_dataloader_config,
                                                                   grid_size=grid_size)
@@ -76,8 +77,9 @@ def main(args):
     hist_list = []
 
     with torch.no_grad():
-        for i_iter_val, (_, val_vox_label, val_grid, val_pt_labs, val_pt_fea) in enumerate(
+        for i_iter_val, (val_vox_fea, val_vox_label, val_grid, val_pt_labs, val_pt_fea) in enumerate(
                 val_dataset_loader):
+            val_vox_fea_ten = val_vox_fea.to(pytorch_device)
 
             val_pt_fea_ten = [torch.from_numpy(i).type(torch.FloatTensor).to(pytorch_device) for i in
                                 val_pt_fea]
@@ -134,8 +136,10 @@ def main(args):
 
                 test_pred_label = np.expand_dims(test_pred_label,axis=1)
 
-                _,dir2 = filename[0].split('/sequences/',1)
-                new_save_dir = output_path + '/sequences/' +dir2.replace('velodyne','predictions')[:-3]+'label'                
+
+
+                _,dir2 = filename[0].split('/LIDAR_TOP/',1)
+                new_save_dir = output_path + '/sequence_nusc/' +dir2.replace('velodyne','predictions')[:-3]+'label'                
                 if not os.path.exists(os.path.dirname(new_save_dir)):
                     try:
                         os.makedirs(os.path.dirname(new_save_dir))
@@ -144,8 +148,8 @@ def main(args):
                             raise
 
                  ####need to add this module        
-                test_pred_label=get_nuScenes_label_color(dataset_config["label_mapping"],test_pred_label)
-                test_pred_label = test_pred_label.astype(np.uint32)
+                # test_pred_label=get_nuScenes_label_color(dataset_config["label_mapping"],test_pred_label)
+                test_pred_label = test_pred_label.astype(np.int64)
 #          
                 test_pred_label.tofile(new_save_dir)
 

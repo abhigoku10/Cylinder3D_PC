@@ -3,7 +3,8 @@
 # @file: data_builder.py 
 
 import torch
-from dataloader.dataset_semantickitti import get_model_class, collate_fn_BEV,collate_fn_BEV_test
+from dataloader.dataset_semantickitti import get_model_class #, collate_fn_BEV,collate_fn_BEV_test
+from dataloader.dataset_nuscenes import collate_fn_BEV,collate_fn_BEV_test
 from dataloader.pc_dataset import get_pc_model_class
 
 
@@ -26,7 +27,8 @@ def build(dataset_config,
     nusc=None
     if "nusc" in dataset_config['pc_dataset_type']:
         from nuscenes import NuScenes
-        nusc = NuScenes(version='v1.0-trainval', dataroot=data_path, verbose=True)
+        # nusc = NuScenes(version='v1.0-trainval', dataroot=data_path, verbose=True)
+        nusc = NuScenes(version='v1.0-mini', dataroot=data_path, verbose=True)
 
     train_pt_dataset = SemKITTI(data_path, imageset=train_imageset,
                                 return_ref=train_ref, label_mapping=label_mapping, nusc=nusc)
@@ -93,7 +95,8 @@ def build_valtest(dataset_config,
     nusc=None
     if "nusc" in dataset_config['pc_dataset_type']:
         from nuscenes import NuScenes
-        nusc = NuScenes(version='v1.0-trainval', dataroot=data_path, verbose=True)
+        # nusc = NuScenes(version='v1.0-trainval', dataroot=data_path, verbose=True)
+        nusc = NuScenes(version='v1.0-mini', dataroot=data_path, verbose=True)
 
     test_pt_dataset = SemKITTI(data_path, imageset=test_imageset,
                                 return_ref=test_ref, label_mapping=label_mapping, nusc=nusc)
